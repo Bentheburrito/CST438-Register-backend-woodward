@@ -62,9 +62,7 @@ public class ScheduleController {
 			throw  new ResponseStatusException( HttpStatus.BAD_REQUEST, "Student not found. " );
 		}
 	}
-	
 
-	
 	@PostMapping("/schedule")
 	@Transactional
 	public ScheduleDTO.CourseDTO addCourse( @RequestBody ScheduleDTO.CourseDTO courseDTO  ) { 
