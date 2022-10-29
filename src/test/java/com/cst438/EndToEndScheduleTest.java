@@ -39,9 +39,9 @@ import com.cst438.domain.EnrollmentRepository;
 @SpringBootTest
 public class EndToEndScheduleTest {
 
-	public static final String CHROME_DRIVER_FILE_LOCATION = "../../geckodriver";
+	public static final String CHROME_DRIVER_FILE_LOCATION = "../../chromedriver";
 
-	public static final String URL = "http://localhost:8080";
+	public static final String URL = "http://localhost:3000/";
 
 	public static final String TEST_USER_EMAIL = "test@csumb.edu";
 
@@ -66,95 +66,94 @@ public class EndToEndScheduleTest {
 	 * Student add course TEST_COURSE_ID to schedule for 2021 Fall semester.
 	 */
 
-	// ******** TEMPORARILY COMMENTED OUT until course frontend is implemented ********
-	// @Test
-	// public void addCourseTest() throws Exception {
+	@Test
+	public void addCourseTest() throws Exception {
 
-	// 	/*
-	// 	 * if student is already enrolled, then delete the enrollment.
-	// 	 */
+		/*
+		 * if student is already enrolled, then delete the enrollment.
+		 */
 
 		
-	// 	Enrollment x = null;
-	// 	do {
-	// 		x = enrollmentRepository.findByEmailAndCourseId(TEST_USER_EMAIL, TEST_COURSE_ID);
-	// 		if (x != null)
-	// 			enrollmentRepository.delete(x);
-	// 	} while (x != null);
+		Enrollment x = null;
+		do {
+			x = enrollmentRepository.findByEmailAndCourseId(TEST_USER_EMAIL, TEST_COURSE_ID);
+			if (x != null)
+				enrollmentRepository.delete(x);
+		} while (x != null);
 
-	// 	// set the driver location and start driver
-	// 	//@formatter:off
-	// 	// browser	property name 				Java Driver Class
-	// 	// edge 	webdriver.edge.driver 		EdgeDriver
-	// 	// FireFox 	webdriver.firefox.driver 	FirefoxDriver
-	// 	// IE 		webdriver.ie.driver 		InternetExplorerDriver
-	// 	//@formatter:on
+		// set the driver location and start driver
+		//@formatter:off
+		// browser	property name 				Java Driver Class
+		// edge 	webdriver.edge.driver 		EdgeDriver
+		// FireFox 	webdriver.firefox.driver 	FirefoxDriver
+		// IE 		webdriver.ie.driver 		InternetExplorerDriver
+		//@formatter:on
 
-	// 	System.setProperty("webdriver.gecko.driver", CHROME_DRIVER_FILE_LOCATION);
-	// 	WebDriver driver = new FirefoxDriver();
-	// 	// Puts an Implicit wait for 10 seconds before throwing exception
-	// 	driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		System.setProperty("webdriver.chrome.driver", CHROME_DRIVER_FILE_LOCATION);
+		WebDriver driver = new ChromeDriver();
+		// Puts an Implicit wait for 10 seconds before throwing exception
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
-	// 	try {
+		try {
 
-	// 		driver.get(URL);
-	// 		Thread.sleep(SLEEP_DURATION);
+			driver.get(URL);
+			Thread.sleep(SLEEP_DURATION);
 
-	// 		// select the last of the radio buttons on the list of semesters page.
+			// select the last of the radio buttons on the list of semesters page.
 			
-	// 		WebElement we = driver.findElement(By.xpath("(//input[@type='radio'])[last()]"));
-	// 		we.click();
+			WebElement we = driver.findElement(By.xpath("(//input[@type='radio'])[last()]"));
+			we.click();
 
-	// 		// Locate and click "Get Schedule" button
+			// Locate and click "Get Schedule" button
 			
-	// 		driver.findElement(By.xpath("//a")).click();
-	// 		Thread.sleep(SLEEP_DURATION);
+			driver.findElement(By.xpath("//a")).click();
+			Thread.sleep(SLEEP_DURATION);
 
-	// 		// Locate and click "Add Course" button which is the first and only button on the page.
-	// 		driver.findElement(By.xpath("//button")).click();
-	// 		Thread.sleep(SLEEP_DURATION);
+			// Locate and click "Add Course" button.
+			driver.findElement(By.xpath("//button[@id='add_course']")).click();
+			Thread.sleep(SLEEP_DURATION);
 
-	// 		// enter course no and click Add button
+			// enter course no and click Add button
 			
-	// 		driver.findElement(By.xpath("//input[@name='course_id']")).sendKeys(Integer.toString(TEST_COURSE_ID));
-	// 		driver.findElement(By.xpath("//button[@id='Add']")).click();
-	// 		Thread.sleep(SLEEP_DURATION);
+			driver.findElement(By.xpath("//input[@name='course_id']")).sendKeys(Integer.toString(TEST_COURSE_ID));
+			driver.findElement(By.xpath("//button[@id='Add']")).click();
+			Thread.sleep(SLEEP_DURATION);
 
-	// 		/*
-	// 		* verify that new course shows in schedule.
-	// 		* get the title of all courses listed in schedule
-	// 		*/ 
+			/*
+			* verify that new course shows in schedule.
+			* get the title of all courses listed in schedule
+			*/ 
 		
-	// 		Course course = courseRepository.findById(TEST_COURSE_ID).get();
+			Course course = courseRepository.findById(TEST_COURSE_ID).get();
 			
-	// 		List<WebElement> elements  = driver.findElements(By.xpath("//div[@data-field='title']/div[@class='MuiDataGrid-cellContent']"));
-	// 		boolean found = false;
-	// 		for (WebElement e : elements) {
-	// 			System.out.println(e.getText()); // for debug
-	// 			if (e.getText().equals(course.getTitle())) {
-	// 				found=true;
-	// 				break;
-	// 			}
-	// 		}
-	// 		assertTrue( found, "Course added but not listed in schedule.");
+			List<WebElement> elements  = driver.findElements(By.xpath("//div[@data-field='title']/div[@class='MuiDataGrid-cellContent']"));
+			boolean found = false;
+			for (WebElement e : elements) {
+				System.out.println(e.getText()); // for debug
+				if (e.getText().equals(course.getTitle())) {
+					found=true;
+					break;
+				}
+			}
+			assertTrue( found, "Course added but not listed in schedule.");
 			
-	// 		// verify that enrollment row has been inserted to database.
+			// verify that enrollment row has been inserted to database.
 			
-	// 		Enrollment e = enrollmentRepository.findByEmailAndCourseId(TEST_USER_EMAIL, TEST_COURSE_ID);
-	// 		assertNotNull(e, "Course enrollment not found in database.");
+			Enrollment e = enrollmentRepository.findByEmailAndCourseId(TEST_USER_EMAIL, TEST_COURSE_ID);
+			assertNotNull(e, "Course enrollment not found in database.");
 
-	// 	} catch (Exception ex) {
-	// 		throw ex;
-	// 	} finally {
+		} catch (Exception ex) {
+			throw ex;
+		} finally {
 
-	// 		// clean up database.
+			// clean up database.
 			
-	// 		Enrollment e = enrollmentRepository.findByEmailAndCourseId(TEST_USER_EMAIL, TEST_COURSE_ID);
-	// 		if (e != null)
-	// 			enrollmentRepository.delete(e);
+			Enrollment e = enrollmentRepository.findByEmailAndCourseId(TEST_USER_EMAIL, TEST_COURSE_ID);
+			if (e != null)
+				enrollmentRepository.delete(e);
 
-	// 		driver.quit();
-	// 	}
+			driver.quit();
+		}
 
-	// }
+	}
 }
